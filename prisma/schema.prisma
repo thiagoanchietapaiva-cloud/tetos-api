@@ -29,16 +29,15 @@ model historico_manutencoes {
   descricao String
   valor     Float     @default(0)
   data      DateTime  @db.Date
-  imovel_id String    @db.Uuid
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   updatedAt DateTime? @default(now()) @db.Timestamp(6)
+  imovel_id String    @db.Uuid
   imoveis   imoveis   @relation(fields: [imovel_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "historico_manutecao_imovel_fk")
 }
 
 model imoveis {
   id                  String                  @id @default(uuid()) @db.Uuid
   matricula           Int?
-  logrador            String                  @db.VarChar(50)
   bairro              String                  @db.VarChar(50)
   cidade              String                  @db.VarChar(50)
   estado              String                  @db.VarChar(2)
@@ -57,6 +56,8 @@ model imoveis {
   locatario_id        String?                 @db.Uuid
   createdAt           DateTime                @default(now()) @db.Timestamp(6)
   updatedAt           DateTime?               @default(now()) @db.Timestamp(6)
+  logradouro          String                  @db.VarChar(50)
+  imagem              String?                 @db.VarChar(255)
   historico_imovel    historico_imovel[]
   historico_manutecao historico_manutencoes[]
   locatarios          locatarios?             @relation(fields: [locatario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "imoveis_locatario_fk")
@@ -94,9 +95,9 @@ model usuarios {
   id        String    @id @default(uuid()) @db.Uuid
   nome      String    @db.VarChar(50)
   email     String    @unique @db.VarChar(50)
-  senha     String    @db.VarChar(255)
-  nivel_id  String    @db.Uuid
   createdAt DateTime  @default(now()) @db.Timestamp(6)
   updatedAt DateTime? @default(now()) @db.Timestamp(6)
+  senha     String    @db.VarChar(255)
+  nivel_id  String    @db.Uuid
   nivel     niveis    @relation(fields: [nivel_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "usuarios_niveis_fk")
 }

@@ -1,23 +1,23 @@
 const jwt = require("jsonwebtoken");
 
-function usuarioAutenticado(req, res, next){
-    let authorization = req.headers.authorization;
-    if(!authorization){
-        res.status(401).json({
+function usuarioAutenticado(req, res, next) {
+    const authorization = req.headers.authorization;
+
+    if (!authorization) {
+        return res.status(401).json({
             type: "warning",
             description: "Acesso não autorizado."
         });
-        return;
     }
 
-    let token = authorization.split(" ")[1];
+    const token = authorization.split(" ")[1];
 
     jwt.verify(token, process.env.SEGREDO, (error) => {
-        if(error){
-            res.status(401).json({
+        if (error) {
+            return res.status(401).json({
                 type: "warning",
                 description: "Token invalido."
-            })
+            });
         }
 
         next();
@@ -26,4 +26,4 @@ function usuarioAutenticado(req, res, next){
 
 module.exports = {
     usuarioAutenticado
-}
+};
