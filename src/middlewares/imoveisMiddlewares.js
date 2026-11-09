@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 function validarDados(req, res, next) {
     const colunas = [
         "logradouro",
@@ -17,6 +19,9 @@ function validarDados(req, res, next) {
     let campoAusentes = colunas.filter(chave => !Object.keys(dados).includes(chave));
 
     if (campoAusentes.length > 0) {
+
+        fs.unlink(req.file.path);
+
     res.json(campoAusentes.map(campo => {
         return {
             type: "warning",
