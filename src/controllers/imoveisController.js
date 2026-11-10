@@ -2,7 +2,26 @@ const PRISMA = require("../services");
 
 async function buscar(req, res) {
     try {
-        const linhas = await PRISMA.imoveis.findMany();
+        const query = {};
+
+        if (req.query.manutencaoes == "true") {
+            query.include ={
+                historico_manutencoes: true
+            }
+        }
+        if (req.query.historico == "true") {
+            query.include ={
+                historico_imovel: true
+            }
+        }
+        if (req.query.locatarios == "true") {
+            query.include ={
+                locatarios: true
+            }
+        }
+
+
+        const linhas = await PRISMA.imoveis.findMany(query);
         res.json(linhas);
     } catch (error) {
         res.json({

@@ -1,25 +1,5 @@
 const PRISMA = require("../services");
 
-function montarDados(body) {
-    const {
-        descricao, data_entrada, data_saida,
-        valor_aluguel, valor_iptu, valor_condominio,
-        imovel_id, locatario_id
-    } = body;
-
-    return {
-        descricao,
-        data_entrada: new Date(data_entrada),
-        data_saida: new Date(data_saida),
-        valor_aluguel: Number(valor_aluguel) || 0,
-        valor_iptu: Number(valor_iptu) || 0,
-        valor_condominio: Number(valor_condominio) || 0,
-        imovel_id,
-        locatario_id,
-        updatedAt: new Date()
-    };
-}
-
 async function buscar(req, res) {
     try {
         const linhas = await PRISMA.historico_imovel.findMany({
@@ -33,7 +13,30 @@ async function buscar(req, res) {
 
 async function criar(req, res) {
     try {
-        await PRISMA.historico_imovel.create({ data: montarDados(req.body) });
+        const {
+            descricao, 
+            data_entrada, 
+            data_saida,
+            valor_aluguel, 
+            valor_iptu, 
+            valor_condominio,
+            imovel_id, 
+            locatario_id
+        } = req.body;
+
+        await PRISMA.historico_imovel.create({
+            data: {
+                descricao,
+                data_entrada: new Date(data_entrada),
+                data_saida: new Date(data_saida),
+                valor_aluguel: Number(valor_aluguel) || 0,
+                valor_iptu: Number(valor_iptu) || 0,
+                valor_condominio: Number(valor_condominio) || 0,
+                imovel_id,
+                locatario_id,
+                updatedAt: new Date()
+            }
+        });
 
         res.json({ type: "success", description: "Registro criado com sucesso." });
     } catch (error) {
@@ -43,11 +46,31 @@ async function criar(req, res) {
 
 async function editar(req, res) {
     try {
+        const {
+            descricao, 
+            data_entrada, 
+            data_saida,
+            valor_aluguel, 
+            valor_iptu, 
+            valor_condominio,
+            imovel_id, 
+            locatario_id
+        } = req.body;
         const { id } = req.params;
 
         await PRISMA.historico_imovel.update({
             where: { id },
-            data: montarDados(req.body)
+            data: {
+                descricao,
+                data_entrada: new Date(data_entrada),
+                data_saida: new Date(data_saida),
+                valor_aluguel: Number(valor_aluguel) || 0,
+                valor_iptu: Number(valor_iptu) || 0,
+                valor_condominio: Number(valor_condominio) || 0,
+                imovel_id,
+                locatario_id,
+                updatedAt: new Date()
+            }
         });
 
         res.json({ type: "success", description: "Registro atualizado com sucesso." });

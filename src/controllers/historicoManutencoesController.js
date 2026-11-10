@@ -1,17 +1,5 @@
 const PRISMA = require("../services");
 
-function montarDados(body) {
-    const { descricao, valor, data, imovel_id } = body;
-
-    return {
-        descricao,
-        valor: Number(valor) || 0,
-        data: new Date(data),
-        imovel_id,
-        updatedAt: new Date()
-    };
-}
-
 async function buscar(req, res) {
     try {
         const linhas = await PRISMA.historico_manutencoes.findMany({
@@ -25,7 +13,17 @@ async function buscar(req, res) {
 
 async function criar(req, res) {
     try {
-        await PRISMA.historico_manutencoes.create({ data: montarDados(req.body) });
+        const { descricao, valor, data, imovel_id } = req.body;
+
+        await PRISMA.historico_manutencoes.create({
+            data: {
+                descricao,
+                valor: Number(valor) || 0,
+                data: new Date(data),
+                imovel_id,
+                updatedAt: new Date()
+            }
+        });
 
         res.json({ type: "success", description: "Registro criado com sucesso." });
     } catch (error) {
@@ -35,11 +33,18 @@ async function criar(req, res) {
 
 async function editar(req, res) {
     try {
+        const { descricao, valor, data, imovel_id } = req.body;
         const { id } = req.params;
 
         await PRISMA.historico_manutencoes.update({
             where: { id },
-            data: montarDados(req.body)
+            data: {
+                descricao,
+                valor: Number(valor) || 0,
+                data: new Date(data),
+                imovel_id,
+                updatedAt: new Date()
+            }
         });
 
         res.json({ type: "success", description: "Registro atualizado com sucesso." });
