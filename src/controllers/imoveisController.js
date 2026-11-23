@@ -1,37 +1,38 @@
 const PRISMA = require("../services");
 
-async function buscar(req, res) {
+async function buscar(req, res){
     try {
         const query = {};
+        const includeObj = {};
 
-        if (req.query.manutencaoes == "true") {
-            query.include ={
-                historico_manutencoes: true
-            }
-        }
-        if (req.query.historico == "true") {
-            query.include ={
-                historico_imovel: true
-            }
-        }
-        if (req.query.locatarios == "true") {
-            query.include ={
-                locatarios: true
-            }
+        if (req.query.manutencoes === "true") {
+            includeObj.historico_manutecao = true;
         }
 
+        if (req.query.historicos === "true") {
+            includeObj.historico_imovel = true;
+        }
+        
+        if (req.query.locatario === "true") {
+            includeObj.locatarios = true;
+        }
+
+        // Se houver pelo menos um relacionamento solicitado, adiciona o include na query
+        if (Object.keys(includeObj).length > 0) {
+            query.include = includeObj;
+        }
 
         const linhas = await PRISMA.imoveis.findMany(query);
-        res.json(linhas);
+        return res.json(linhas);
     } catch (error) {
-        res.json({
+        return res.status(500).json({
             type: "error",
-            descrição: error.message
+            description: error.message 
         });
     }
 }
 
-async function criar(req, res) {
+async function criar(req, res){
     try {
         const dados = req.body;
         const arquivo = req.file;
@@ -45,64 +46,67 @@ async function criar(req, res) {
                 garagens: Number(dados.garagens),
                 metragem: Number(dados.metragem),
                 valor_aluguel: Number(dados.valor_aluguel),
-                imagem: `./uploads/imoveis/${arquivo.filename}`
+                imagem: `/uploads/imoveis/${arquivo.filename}`
             }
         });
-
+        
         res.json({
-            type: "sucess",
-            descricao: "Registro criado com sucesso"
+            type: "success",
+            description: "Registro criado com sucesso."
         })
+        
     } catch (error) {
         res.json({
             type: "error",
-            descricao: error.message
+            description: error.message 
         });
     }
 }
 
-async function editar(req, res) {
+async function editar(req, res){
     try {
         const dados = req.body;
         const { id } = req.params;
-
-
+        
         await PRISMA.imoveis.update({
             where: {
                 id
             },
             data: dados
-        })
+        });
+        
         res.json({
             type: "success",
-            descricao: "Registro atualizado com sucesso"
+            description: "Registro atualizado com sucesso."
         })
+        
     } catch (error) {
         res.json({
             type: "error",
-            descricao: error.message
+            description: error.message 
         });
     }
 }
 
-async function deletar(req, res) {
+async function deletar(req, res){
     try {
         const { id } = req.params;
-
+        
         await PRISMA.imoveis.delete({
             where: {
                 id
             }
         });
-
+        
         res.json({
             type: "success",
-            descricao: "Registro deletado com sucesso"
-        });
+            description: "Registro deletado com sucesso."
+        })
+        
     } catch (error) {
         res.json({
             type: "error",
-            descricao: error.message
+            description: error.message 
         });
     }
 }
@@ -111,5 +115,5 @@ module.exports = {
     buscar,
     criar,
     editar,
-    deletar,
+    deletar
 }

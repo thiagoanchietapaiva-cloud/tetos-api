@@ -9,7 +9,7 @@ const locatariosRoutes = require("./src/routes/locatariosRoutes");
 const imoveisRoutes = require("./src/routes/imoveisRoutes");
 const historicoImovelRoutes = require("./src/routes/historicoImovelRoutes");
 const historicoManutencoesRoutes = require("./src/routes/historicoManutencoesRoutes");
-const { login } = require("./src/controllers/usuariosController");
+const { login, criar } = require("./src/controllers/usuariosController");
 const { usuarioAutenticado } = require("./src/middlewares/usuariosMiddlewares");
 
 const app = express();
@@ -23,6 +23,7 @@ app.get("/", (req, res) => {
     res.redirect("/docs");
 });
 app.post("/login", login);
+app.post("/cadastrar", criar);
 
 app.use("/niveis", usuarioAutenticado, niveisRoutes);
 app.use("/imoveis-tipo", usuarioAutenticado, imoveisTipoRoutes);

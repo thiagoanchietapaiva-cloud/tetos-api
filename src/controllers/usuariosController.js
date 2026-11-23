@@ -134,7 +134,7 @@ async function login(req, res){
         let token = await jwt.sign({id: usuario.id}, process.env.SEGREDO, { expiresIn: "1h"});
 
         res.json({
-                type: "warning",
+                type: "success",
                 description: "Login realizado com sucesso.",
                 usuario,
                 token
