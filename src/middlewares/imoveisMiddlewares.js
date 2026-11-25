@@ -7,28 +7,26 @@ function validarDados(req, res, next) {
         "cidade",
         "estado",
         "numero",
-        "cep",
-        "valor_aluguel",
-        "metragem",
         "quartos",
-        "suites",
         "banheiros",
-        "tipo_id"
+        "imoveis_tipo_id"
     ];
     const dados = req.body || {};
-    let campoAusentes = colunas.filter(chave => !Object.keys(dados).includes(chave));
+    let campoAusentes = colunas.filter(chave => !Object.keys(dados).includes(chave) || dados[chave] === "" || dados[chave] === null || dados[chave] === undefined);
 
     if (campoAusentes.length > 0) {
 
-        fs.unlink(req.file.path);
-
-    res.json(campoAusentes.map(campo => {
-        return {
-            type: "warning",
-            description: `Coluna ${campo} não informada`
+        if (req.file?.path) {
+            fs.unlink(req.file.path, () => {});
         }
-    }))
-}
+
+        return res.json(campoAusentes.map(campo => {
+            return {
+                type: "warning",
+                description: `Coluna ${campo} não informada`
+            }
+        }))
+    }
 
     next();
 }
