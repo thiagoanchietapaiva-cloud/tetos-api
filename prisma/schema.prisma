@@ -57,7 +57,7 @@ model imoveis {
   createdAt           DateTime                @default(now()) @db.Timestamp(6)
   updatedAt           DateTime?               @default(now()) @db.Timestamp(6)
   logradouro          String                  @db.VarChar(50)
-  imagem              String?                 @db.VarChar(255)
+  imagem              String?                 @db.Text
   historico_imovel    historico_imovel[]
   historico_manutecao historico_manutencoes[]
   locatarios          locatarios?             @relation(fields: [locatario_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "imoveis_locatario_fk")
@@ -87,7 +87,7 @@ model niveis {
   id        String     @id @default(uuid()) @db.Uuid
   nome      String     @db.VarChar(50)
   createdAt DateTime   @default(now()) @db.Timestamp(6)
-  updatedAt DateTime?  @default(now()) @db.Timestamp(6)
+  updatedAt DateTime? @default(now()) @db.Timestamp(6)
   usuarios  usuarios[]
 }
 
@@ -95,7 +95,7 @@ model usuarios {
   id        String    @id @default(uuid()) @db.Uuid
   nome      String    @db.VarChar(50)
   email     String    @unique @db.VarChar(50)
-  createdAt DateTime  @default(now()) @db.Timestamp(6)
+  createdAt DateTime   @default(now()) @db.Timestamp(6)
   updatedAt DateTime? @default(now()) @db.Timestamp(6)
   senha     String    @db.VarChar(255)
   nivel_id  String    @db.Uuid
